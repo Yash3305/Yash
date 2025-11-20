@@ -1,0 +1,29 @@
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+// Register our currency service
+builder.Services.AddSingleton<CurrencyConverter.Services.ICurrencyService, CurrencyConverter.Services.CurrencyService>();
+
+var app = builder.Build();
+
+// (existing code: error handling, static files, routing)
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Currency}/{action=Index}/{id?}");
+
+app.Run();

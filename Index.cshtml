@@ -1,0 +1,59 @@
+@model CurrencyConverter.Models.CurrencyViewModel
+@{
+    ViewData["Title"] = "Currency Converter";
+}
+
+<h1>Currency Converter</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Index" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-2">
+                <label asp-for="Amount" class="form-label">Amount</label>
+                <input asp-for="Amount" class="form-control" step="0.01" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="FromCurrency" class="form-label">From</label>
+                <select asp-for="FromCurrency" class="form-select" asp-items="new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Currencies)">
+                </select>
+            </div>
+
+            <div class="form-group mb-2">
+                <label asp-for="ToCurrency" class="form-label">To</label>
+                <select asp-for="ToCurrency" class="form-select" asp-items="new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Currencies)">
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-2">Convert</button>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        @if (Model.ConvertedAmount > 0)
+        {
+            <div class="card p-3">
+                <h4>Result</h4>
+                <p>
+                    <strong>@Model.Amount</strong> @Model.FromCurrency =
+                    <strong>@Model.ConvertedAmount</strong> @Model.ToCurrency
+                </p>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Basic client-side check to prevent negative values
+        document.querySelectorAll('[name="Amount"]').forEach(el => {
+            el.addEventListener('input', function () {
+                if (parseFloat(this.value) < 0) this.value = Math.abs(this.value);
+            });
+        });
+    </script>
+}
